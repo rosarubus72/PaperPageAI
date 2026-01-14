@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <!-- MathJax支持 -->
+        <script>
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$']],
+                    displayMath: [['$$', '$$']]
+                },
+                svg: {
+                    fontCache: 'global'
+                },
+                options: {
+                    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+                    processEscapes: false
+                }
+            };
+        </script>
+        <script type="text/javascript" id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+        </script>
+        
+        <style>
+            mjx-container {
+                display: inline-block !important;
+                line-height: normal !important;
+            }
+            .MathJax {
+                font-style: normal !important;
+                font-weight: normal !important;
+            }
+            .no-mathjax {
+                font-style: normal !important;
+                color: inherit !important;
+                background-color: transparent !important;
+                display: inline !important;
+            }
+        </style>
+        
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Human-Agent Collaborative Paper-to-Page Crafting for Under $0.1</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <!-- 修正Font-awesome引用路径 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#7B2CBF', // 深紫色
+            secondary: '#C084FC', // 中紫色
+            accent: '#F0ABFC', // 浅紫色
+            dark: '#4C1D95', // 暗紫色
+            light: '#FAF5FF', // 极浅紫色
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .text-glow {
+        text-shadow: 0 0 10px rgba(123, 44, 191, 0.5);
+      }
+      .bg-gradient-purple {
+        background: linear-gradient(135deg, #4C1D95 0%, #7B2CBF 100%);
+      }
+      .bg-gradient-purple-light {
+        background: linear-gradient(135deg, #FAF5FF 0%, #EDE9FE 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px -5px rgba(123, 44, 191, 0.1), 0 10px 10px -5px rgba(123, 44, 191, 0.04);
+      }
+      /* 图标悬停动画 */
+      .icon-hover {
+        transition: transform 0.3s ease;
+      }
+      .icon-hover:hover {
+        transform: scale(1.15);
+      }
+    }
+  </style>
+  
+  <style>
+    /* 滚动行为和基础动画 */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* 图表容器样式 */
+    .plotly-chart {
+      width: 100%;
+      height: 450px;
+    }
+    
+    /* 粒子背景效果 */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    
+    /* 导航高亮动画 */
+    .nav-link.active {
+      border-left-color: #F0ABFC;
+      color: #F0ABFC;
+      font-weight: 600;
+    }
+    
+    /* 内容区块淡入动画 */
+    .section-fade {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    
+    .section-fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body class="bg-light font-sans text-gray-800 overflow-x-hidden">
+  <div class="flex flex-col lg:flex-row min-h-screen">
+    <!-- 左侧导航栏 - 桌面版 -->
+    <aside class="hidden lg:block w-64 bg-gradient-purple text-white fixed h-full z-30 shadow-lg">
+      <div class="p-6 border-b border-secondary/30">
+        <h1 class="text-2xl font-bold mb-2 text-glow">Human-Agent Collaborative Paper-to-Page Crafting for Under $0.1</h1>
+        <p class="text-accent/80 text-sm">Conference on AI Research</p>
+      </div>
+      
+      <nav class="p-4">
+        <ul class="space-y-1">
+          <li>
+            <a href="#abstract" class="nav-link block py-2 px-4 rounded border-l-4 border-transparent hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-file-text mr-3"></i>Abstract
+            </a>
+          </li>
+          <li>
+            <a href="#motivation" class="nav-link block py-2 px-4 rounded border-l-4 border-transparent hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-lightbulb mr-3"></i>Motivation
+            </a>
+          </li>
+          <li>
+            <a href="#innovation" class="nav-link block py-2 px-4 rounded border-l-4 border-transparent hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-rocket mr-3"></i>Innovation
+            </a>
+          </li>
+          <li>
+            <a href="#method" class="nav-link block py-2 px-4 rounded border-l-4 border-transparent hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-cogs mr-3"></i>Methodology
+            </a>
+          </li>
+          <li>
+            <a href="#experiments" class="nav-link block py-2 px-4 rounded border-l-4 border-transparent hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-chart-bar mr-3"></i>Experiments
+            </a>
+          </li>
+          <li>
+            <a href="#bibtex" class="nav-link block py-2 px-4 rounded border-l-4 border-transparent hover:bg-white/10 transition-all">
+              <i class="fa-solid fa-quote-right mr-3"></i>BibTeX
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="absolute bottom-8 left-0 right-0 px-6">
+        <div class="flex space-x-4 justify-center">
+          <!-- Paper图标 -->
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all ">
+            <i class="fa-solid fa-file-pdf icon-hover"></i>
+          </a>
+          <!-- Code图标 -->
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all ">
+            <i class="fa-brands fa-github icon-hover"></i>
+          </a>
+          <!-- Dataset图标 -->
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all ">
+            <i class="fa-solid fa-database icon-hover"></i>
+          </a>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- 移动端导航按钮 -->
+    <div class="lg:hidden fixed top-4 right-4 z-50">
+      <button id="mobile-nav-btn" class="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- 移动端导航菜单 -->
+    <div id="mobile-nav" class="lg:hidden fixed inset-0 bg-primary z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
+      <div class="p-6 border-b border-secondary/30 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-glow">Human-Agent Collaborative Paper-to-Page Crafting for Under $0.1</h1>
+        <button id="close-nav-btn" class="text-white text-2xl">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <nav class="p-6">
+        <ul class="space-y-3">
+          <li>
+            <a href="#abstract" class="mobile-nav-link block py-3 px-4 rounded bg-white/10 hover:bg-white/20 transition-all">
+              <i class="fa-solid fa-file-text mr-3"></i>Abstract
+            </a>
+          </li>
+          <li>
+            <a href="#motivation" class="mobile-nav-link block py-3 px-4 rounded bg-white/10 hover:bg-white/20 transition-all">
+              <i class="fa-solid fa-lightbulb mr-3"></i>Motivation
+            </a>
+          </li>
+          <li>
+            <a href="#innovation" class="mobile-nav-link block py-3 px-4 rounded bg-white/10 hover:bg-white/20 transition-all">
+              <i class="fa-solid fa-rocket mr-3"></i>Innovation
+            </a>
+          </li>
+          <li>
+            <a href="#method" class="mobile-nav-link block py-3 px-4 rounded bg-white/10 hover:bg-white/20 transition-all">
+              <i class="fa-solid fa-cogs mr-3"></i>Methodology
+            </a>
+          </li>
+          <li>
+            <a href="#experiments" class="mobile-nav-link block py-3 px-4 rounded bg-white/10 hover:bg-white/20 transition-all">
+              <i class="fa-solid fa-chart-bar mr-3"></i>Experiments
+            </a>
+          </li>
+          <li>
+            <a href="#bibtex" class="mobile-nav-link block py-3 px-4 rounded bg-white/10 hover:bg-white/20 transition-all">
+              <i class="fa-solid fa-quote-right mr-3"></i>BibTeX
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="absolute bottom-8 left-0 right-0 px-6">
+        <div class="flex space-x-6 justify-center">
+          <!-- Paper图标 -->
+          <a href="#" class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all ">
+            <i class="fa-solid fa-file-pdf text-xl icon-hover"></i>
+          </a>
+          <!-- Code图标 -->
+          <a href="#" class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all ">
+            <i class="fa-brands fa-github text-xl icon-hover"></i>
+          </a>
+          <!-- Dataset图标 -->
+          <a href="#" class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all ">
+            <i class="fa-solid fa-database text-xl icon-hover"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <main class="flex-1 lg:ml-64 relative">
+      <!-- 英雄区域 -->
+      <header class="relative overflow-hidden bg-gradient-purple text-white py-20 md:py-32">
+        <div id="particles-js" class="opacity-30"></div>
+        <div class="container mx-auto px-6 relative z-10">
+          <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-glow leading-tight">Human-Agent Collaborative Paper-to-Page Crafting for Under $0.1</h1>
+            <div class="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-lg font-medium mb-8">
+              Conference on AI Research
+            </div>
+            
+            <!-- 作者 - 移除循环，直接使用单个变量 -->
+            <div class="max-w-4xl mx-auto mb-6">
+              <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-lg">
+                <p>Chang Guo, Yilin Chen, Zhening Xing, Yinhao Tang, Yanan Sun, Yixiang Yang, Zhipeng Zhang</p>
+              </div>
+              <!-- 机构 - 移除循环，直接使用单个变量 -->
+              <div class="mt-2 text-gray-300">
+                <span>AutoLab, SAI, Shanghai Jiao Tong University, Shanghai AI Laboratory</span>
+              </div>
+            </div>
+            
+            <!-- 链接按钮组 -->
+            <div class="flex flex-wrap justify-center gap-4">
+              <!-- Paper按钮 -->
+              <a href="#" class="bg-white text-primary px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all flex items-center ">
+                <i class="fa-solid fa-file-pdf mr-2 icon-hover"></i> Full Paper
+              </a>
+              <!-- Code按钮 -->
+              <a href="#" class="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all flex items-center ">
+                <i class="fa-brands fa-github mr-2 icon-hover"></i> Code
+              </a>
+              <!-- Dataset按钮 -->
+              <a href="#" class="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all flex items-center ">
+                <i class="fa-solid fa-database mr-2 icon-hover"></i> Dataset
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 装饰性波浪 -->
+        <div class="absolute bottom-0 left-0 right-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" class="w-full h-auto">
+            <path fill="#FAF5FF" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+          </svg>
+        </div>
+      </header>
+      
+      <!-- 摘要部分 -->
+      <section id="abstract" class="py-16 section-fade">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-1 bg-primary rounded-full mr-4"></div>
+            <h2 class="text-3xl font-bold text-gray-800">Abstract</h2>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-md p-8 border border-purple-100">
+            <p class="text-lg leading-relaxed"><div class='section-content'>
+<p>In the quest for scientific progress, communicating research is as vital as the discovery itself. Yet, researchers are often sidetracked by the manual, repetitive chore of building project webpages to make their dense papers accessible. While automation has tackled static slides and posters, the dynamic, interactive nature of webpages has remained an unaddressed challenge. To bridge this gap, we reframe the problem, arguing that the solution lies not in a single command, but in a collaborative, hierarchical process. We introduce AutoPage , a novel multiagent system that embodies this philosophy. AutoPage deconstructs paper-to-page creation into a coarse-to-fine pipeline from narrative planning to multimodal content generation and interactive rendering. To combat AI hallucination, dedicated "Checker" agents verify each step against the source paper, while optional human checkpoints ensure the final product aligns perfectly with the author's vision, transforming the system from a mere tool into a powerful collaborative assistant. To rigorously validate our approach, we also construct PageBench , the first benchmark for this new task. Experiments show AutoPage not only generates highquality, visually appealing pages but does so with remarkable efficiency in under 15 minutes for less than $0.1. Code and dataset will be released at Webpage 1 .</p>
+</div></p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 动机部分 -->
+      <section id="motivation" class="py-16 bg-gradient-purple-light section-fade">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-1 bg-primary rounded-full mr-4"></div>
+            <h2 class="text-3xl font-bold text-gray-800">Motivation</h2>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-md p-8 border border-purple-100">
+            <p class="text-lg leading-relaxed"><div class='section-content'>
+<p>The primary motivation for this research stems from the limitations of existing methods in automating the generation of project webpages for academic papers. Traditional approaches, such as converting papers into static visual formats like slides or posters, fall short when applied to interactive, dynamic webpages due to their rigid, non-flexible nature and inability to handle complex, varied paper structures. Additionally, current agent-based systems, though capable of generating high-quality static content, are inadequate for interactive webpages that require detailed narrative planning, multimodal content generation, and interactive rendering. This mismatch necessitates a fundamentally new approach that can manage the inherent complexity of webpage creation through a hierarchical, coarse-to-fine generation process augmented by human-agent collaboration. Addressing this gap is crucial because it frees researchers from the time-consuming and repetitive task of manually creating project webpages, allowing them to focus on core research activities. Furthermore, ensuring factual accuracy and visual appeal in automated webpages is challenging due to the risk of AI hallucination, which highlights the need for robust quality control mechanisms. Thus, this research aims to develop a multi-agent system, AutoPage, that not only generates high-quality, interactive webpages but also ensures alignment with the author's vision through iterative human oversight.</p>
+
+            <div class="visual my-6 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <img src="assets/asset_0_Human-Agent-picture-2.jpg" alt="Overview of AutoPage. AutoPage conducts a multi-agent pipeline for transforming papers into interactive webpages: (1) Narrative Planning and Structuring parses PDFs into Markdown and generates section-level outlines; (2) Multimodal Content Generation produces coherent text-visual sections; (3) Interactive Page Rendering matches templates, compiles full HTML pages, and performs final layout checks. Throughout all phases, AutoPage integrates verification mechanisms and optional human-in-the-loop checkpoints for reliable and flexible generation." 
+                        class="w-full h-auto rounded-lg shadow-md mx-auto"
+                        loading="lazy" decoding="async">
+                </div>
+                <p class="text-sm italic text-gray-600 mt-2">
+                    Overview of AutoPage. AutoPage conducts a multi-agent pipeline for transforming papers into interactive webpages: (1) Narrative Planning and Structuring parses PDFs into Markdown and generates section-level outlines; (2) Multimodal Content Generation produces coherent text-visual sections; (3) Interactive Page Rendering matches templates, compiles full HTML pages, and performs final layout checks. Throughout all phases, AutoPage integrates verification mechanisms and optional human-in-the-loop checkpoints for reliable and flexible generation.
+                </p>
+            </div>
+            
+</div></p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 创新部分 -->
+      <section id="innovation" class="py-16 section-fade">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-1 bg-primary rounded-full mr-4"></div>
+            <h2 class="text-3xl font-bold text-gray-800">Innovation</h2>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-md p-8 border border-purple-100">
+            <p class="text-lg leading-relaxed"><div class='section-content'>
+<p>The main innovations and key contributions of this paper lie in the introduction of a novel approach to automating the generation of high-quality, interactive project webpages for academic papers. Unlike previous works that primarily focused on converting papers into static visual formats like slides, posters, and videos, this paper addresses the unique challenges posed by project webpages, which require a flexible, scrollable structure and interactive elements. The proposed AutoPage framework introduces a hierarchical, coarse-to-fine generation process that incorporates iterative human-agent collaboration, ensuring both content accuracy and <span class="text-primary font-semibold">visual quality</span>. By leveraging a multi-agent system, AutoPage decomposes the complex task into narrative planning, multimodal content generation, and interactive page rendering, with each phase concluding with a verification step to mitigate AI hallucination. Additionally, AutoPage is designed to support flexible collaboration, allowing for human oversight to align the final output with the author’s vision. This approach not only enhances the performance of various large language models (LLMs) but also narrows the performance gap between different backbone models, making it a versatile and effective solution. The construction of PageBench, the first benchmark for this task, further validates the effectiveness of AutoPage and provides a robust framework for future research.</p>
+
+            <div class="visual my-6 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <img src="assets/asset_1_Human-Agent-picture-1.jpg" alt="Overview of our work. (a) End-to-end LLMs directly convert papers into project pages, resulting in unreasonable layouts and lacking human feedback. (b) Our proposed AutoPage integrates human-agent collaboration into automated page generation with higher content and visual quality. The figure also illustrates the process for constructing the PageBench benchmark." 
+                        class="w-full h-auto rounded-lg shadow-md mx-auto"
+                        loading="lazy" decoding="async">
+                </div>
+                <p class="text-sm italic text-gray-600 mt-2">
+                    Overview of our work. (a) End-to-end LLMs directly convert papers into project pages, resulting in unreasonable layouts and lacking human feedback. (b) Our proposed AutoPage integrates human-agent collaboration into automated page generation with higher content and visual quality. The figure also illustrates the process for constructing the PageBench benchmark.
+                </p>
+            </div>
+            
+
+            <div class="visual my-6 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <img src="assets/asset_2_Human-Agent-picture-4.jpg" alt="Qualitative comparison illustrating AutoPage's superior generation quality over baselines. The figure highlights four common scenarios where AutoPage demonstrates superior performance: (a) Formula Presentation; (b) Image Layout; (c) Table Presentation; (d) Content Planning. This qualitative comparison demonstrates AutoPage's ability not just to fill a page with content, but to thoughtfully design it." 
+                        class="w-full h-auto rounded-lg shadow-md mx-auto"
+                        loading="lazy" decoding="async">
+                </div>
+                <p class="text-sm italic text-gray-600 mt-2">
+                    Qualitative comparison illustrating AutoPage's superior generation quality over baselines. The figure highlights four common scenarios where AutoPage demonstrates superior performance: (a) Formula Presentation; (b) Image Layout; (c) Table Presentation; (d) Content Planning. This qualitative comparison demonstrates AutoPage's ability not just to fill a page with content, but to thoughtfully design it.
+                </p>
+            </div>
+            
+</div></p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 方法部分 -->
+      <section id="method" class="py-16 bg-gradient-purple-light section-fade">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-1 bg-primary rounded-full mr-4"></div>
+            <h2 class="text-3xl font-bold text-gray-800">Methodology</h2>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-md p-8 border border-purple-100">
+            <p class="text-lg leading-relaxed"><div class='section-content'>
+<p>The proposed method, AutoPage, addresses the challenge of creating dynamic, interactive project webpages from research papers through a hierarchical, multiagent system. At its core, AutoPage operates via a coarse-to-fine pipeline, starting with narrative planning and structuring. Initially, the source paper is parsed into a structured narrative blueprint using a combination of tools and Language Model (LLM) processing. This blueprint outlines the paper's content and visual elements, organizing them into a semantically rich asset library.
+
+Next, the Page Content Planner designs the webpage's high-level structure, optimizing the narrative flow for web presentation. This blueprint is verified for completeness and logical soundness before content generation. The system then integrates content modules into a chosen template, applying interactive features and ensuring visual integrity through automated checks. Users have the option to provide final adjustments through a Human-in-the-Loop mechanism, enhancing control and flexibility.
+
+To ensure the system's effectiveness, AutoPage avoids information leakage during evaluation by cross-pairing templates and content sources. The method is benchmarked against various LLMs, and experiments demonstrate AutoPage's capability to generate high-quality, visually appealing webpages efficiently. This approach transforms the process of creating project webpages from a manual, time-consuming task into a streamlined, collaborative effort, significantly enhancing researcher productivity and accessibility.</p>
+</div></p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 实验结果部分 -->
+      <section id="experiments" class="py-16 section-fade">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-1 bg-primary rounded-full mr-4"></div>
+            <h2 class="text-3xl font-bold text-gray-800">Experiments</h2>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-md p-8 border border-purple-100">
+            <p class="text-lg leading-relaxed"><div class='section-content'>
+<p>The experiments conducted included benchmarking AutoPage against a variety of advanced language models, both closed-source (<span class="text-primary font-semibold">GPT-4o</span>-mini, Grok-4-fast, GLM-4-Air) and open-source (<span class="text-primary font-semibold">Qwen</span>3235B, GPT-OSS-120B, Llama-3.1-70B). AutoPage consistently demonstrated superior performance, particularly in generating webpages with higher aesthetic quality, better layout and cohesion, and improved semantic fidelity. In a user study involving 20 participants, AutoPage achieved the highest average score of 7.16, outperforming other models like Grok4-fast (6.93) and Gemini2.5-Flash (6.79). The study highlighted AutoPage’s effectiveness in producing webpages that are more coherent, dynamic, and accessible, as evidenced by higher user preference scores. Additionally, AutoPage was found to enhance the performance of various backbone models, narrowing the gap between high-performing and weaker models. This indicates that AutoPage not only excels in augmenting strong models but also significantly elevates the capabilities of weaker ones, thereby broadening the applicability of the framework. Overall, these results demonstrate that AutoPage is a robust and versatile tool for transforming academic papers into high-quality, interactive webpages, effectively lowering the barriers to scientific communication.</p>
+
+            <div class="visual my-6 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <img src="assets/asset_3_Human-Agent-picture-3.jpg" alt="Human preference study. The bar chart shows that AutoPage attains the highest user preference score, surpassing all baselines with more informative, coherent, and visually engaging webpages." 
+                        class="w-full h-auto rounded-lg shadow-md mx-auto"
+                        loading="lazy" decoding="async">
+                </div>
+                <p class="text-sm italic text-gray-600 mt-2">
+                    Human preference study. The bar chart shows that AutoPage attains the highest user preference score, surpassing all baselines with more informative, coherent, and visually engaging webpages.
+                </p>
+            </div>
+            
+</div></p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 引用部分 -->
+      <section id="bibtex" class="py-16 bg-gradient-purple-light section-fade">
+        <div class="container mx-auto px-6 max-w-5xl">
+          <div class="flex items-center mb-8">
+            <div class="w-12 h-1 bg-primary rounded-full mr-4"></div>
+            <h2 class="text-3xl font-bold text-gray-800">BibTeX</h2>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-sm p-8 border border-purple-100">
+            <div class="bg-gray-50 p-6 rounded-lg font-mono text-sm text-left overflow-x-auto">
+              <pre>@inproceedings{HumanAgentColla2025,
+        title={ Human-Agent Collaborative Paper-to-Page Crafting for Under $0.1 },
+        author={ Chang Guo and  Yilin Chen and  Zhening Xing and  Yinhao Tang and  Yanan Sun and  Yixiang Yang and  Zhipeng Zhang },
+        booktitle={ Conference on AI Research },
+        year={2025},
+        }</pre>
+            </div>
+            <button id="copy-citation" class="mt-4 text-primary hover:text-dark transition-colors flex items-center">
+              <i class="fa-solid fa-copy mr-2"></i> Copy Citation
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 页脚 - 移除数组索引，直接使用authors变量 -->
+      <footer class="text-center py-8 text-gray-500 text-sm border-t border-purple-200 bg-white">
+        © 2025 Chang Guo, Yilin Chen, Zhening Xing, Yinhao Tang, Yanan Sun, Yixiang Yang, Zhipeng Zhang et al.
+      </footer>
+    </main>
+  </div>
+  
+  <!-- 粒子背景库 -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  
+  <!-- 主脚本 -->
+  <script>
+    // 粒子背景初始化
+    particlesJS('particles-js', {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": true,
+          "anim": {
+            "enable": true,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": true,
+            "speed": 2,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.2,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 1,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "grab"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 140,
+            "line_linked": {
+              "opacity": 0.5
+            }
+          },
+          "push": {
+            "particles_nb": 4
+          }
+        }
+      },
+      "retina_detect": true
+    });
+    
+    // 移动端导航交互
+    document.getElementById('mobile-nav-btn').addEventListener('click', function() {
+      document.getElementById('mobile-nav').classList.remove('translate-x-full');
+    });
+    
+    document.getElementById('close-nav-btn').addEventListener('click', function() {
+      document.getElementById('mobile-nav').classList.add('translate-x-full');
+    });
+    
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        document.getElementById('mobile-nav').classList.add('translate-x-full');
+      });
+    });
+    
+    // 滚动时导航高亮
+    window.addEventListener('scroll', function() {
+      const sections = document.querySelectorAll('section');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      let current = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= sectionTop - 150) {
+          current = section.getAttribute('id');
+        }
+      });
+      
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').substring(1) === current) {
+          link.classList.add('active');
+        }
+      });
+    });
+    
+    // 内容区块淡入动画
+    const fadeElements = document.querySelectorAll('.section-fade');
+    
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    fadeElements.forEach(element => {
+      fadeObserver.observe(element);
+    });
+    
+    // 复制引用功能
+    document.getElementById('copy-citation').addEventListener('click', function() {
+      const citationText = document.querySelector('pre').textContent;
+      navigator.clipboard.writeText(citationText).then(() => {
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Copied!';
+        this.classList.add('text-green-600');
+        
+        setTimeout(() => {
+          this.innerHTML = originalText;
+          this.classList.remove('text-green-600');
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>

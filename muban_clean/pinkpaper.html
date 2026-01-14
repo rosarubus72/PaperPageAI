@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#E94498', // 浪漫粉
+            secondary: '#C026D3', // 粉紫色
+            accent: '#F472B6', // 亮粉色
+            light: '#FEF2F7', // 浅粉背景
+            dark: '#831843', // 深粉文字
+          },
+          fontFamily: {
+            sans: ['Poppins', 'system-ui', 'sans-serif'],
+            heading: ['Playfair Display', 'serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 10px rgba(233, 68, 152, 0.15);
+      }
+      .card-elevation {
+        box-shadow: 0 10px 30px rgba(233, 68, 152, 0.08);
+      }
+      .gradient-border {
+        position: relative;
+        border-radius: 1.5rem;
+        z-index: 0;
+      }
+      .gradient-border::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 1.6rem;
+        background: linear-gradient(135deg, #E94498, #C026D3);
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .section-transition:hover .gradient-border::before {
+        opacity: 1;
+      }
+    }
+  </style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap');
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, #FEF2F7 0%, #FCE7F3 100%);
+    }
+    
+    .section-transition {
+      transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    
+    .section-transition:hover {
+      transform: translateY(-5px);
+    }
+    
+    .section-transition:hover .section-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+    
+    .btn-pulse {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-pulse::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+    
+    .btn-pulse:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    /* 滚动条美化 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #FEF2F7;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #F472B6;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #E94498;
+    }
+  </style>
+</head>
+<body class="bg-light font-sans text-gray-800">
+  <!-- 顶部装饰元素 -->
+  <div class="h-2 bg-gradient-to-r from-primary to-secondary"></div>
+  
+  <!-- 顶部信息栏 -->
+  <div class="bg-gradient-to-r from-primary to-secondary text-white py-2 px-6 text-center text-sm">
+    <p>{{ publication_info }}</p>
+  </div>
+
+  <!-- 标题区域 -->
+  <header class="hero-gradient py-16 md:py-24 relative overflow-hidden">
+    <!-- 装饰元素 -->
+    <div class="absolute top-10 left-10 w-20 h-20 rounded-full bg-accent/10 animate-float"></div>
+    <div class="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-secondary/10 animate-float" style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-16 h-16 rounded-full bg-primary/10 animate-float" style="animation-delay: 2s;"></div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-dark mb-6 text-shadow leading-tight">
+          {{ title }}
+        </h1>
+        <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-gray-700 mb-8">
+          {% for author in authors %}
+          <span class="font-medium text-dark/90">{{ author }}<sup>{{ loop.index }}</sup></span>
+          {% if not loop.last %}<span class="text-accent">•</span>{% endif %}
+          {% endfor %}
+        </div>
+        <div class="text-gray-600 text-sm md:text-base max-w-2xl mx-auto mb-10">
+          {% for aff in affiliations %}
+          <span><sup>{{ loop.index }}</sup> {{ aff }}{% if not loop.last %} | {% endif %}</span>
+          {% endfor %}
+        </div>
+        <!-- Links -->
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="{{ links.paper or '#' }}" class="bg-primary text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-secondary transition-colors flex items-center gap-2 shadow-md btn-pulse {% if not links.paper %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-solid fa-file-pdf"></i> Paper
+          </a>
+          <a href="{{ links.code or '#' }}" class="bg-white text-primary px-5 py-2.5 rounded-lg font-semibold hover:bg-light transition-colors flex items-center gap-2 shadow-sm btn-pulse {% if not links.code %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-brands fa-github"></i> Code
+          </a>
+          <a href="{{ links.dataset or '#' }}" class="bg-white text-primary px-5 py-2.5 rounded-lg font-semibold hover:bg-light transition-colors flex items-center gap-2 shadow-sm btn-pulse {% if not links.dataset %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-solid fa-database"></i> Dataset
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 导航栏 -->
+  <nav class="bg-white/90 backdrop-blur-sm shadow-md sticky top-[41px] z-40 transition-all duration-300">
+    <div class="container mx-auto px-6">
+      <div class="flex overflow-x-auto scrollbar-hide py-3 gap-1 md:gap-6 md:justify-center">
+        <a href="#abstract" class="whitespace-nowrap px-4 py-2 rounded-md hover:bg-light transition-colors flex items-center gap-2 text-sm md:text-base">
+          <i class="fa-solid fa-file-text text-primary"></i> Abstract
+        </a>
+        <a href="#motivation" class="whitespace-nowrap px-4 py-2 rounded-md hover:bg-light transition-colors flex items-center gap-2 text-sm md:text-base">
+          <i class="fa-solid fa-lightbulb text-primary"></i> Motivation
+        </a>
+        <a href="#innovation" class="whitespace-nowrap px-4 py-2 rounded-md hover:bg-light transition-colors flex items-center gap-2 text-sm md:text-base">
+          <i class="fa-solid fa-star text-primary"></i> Innovation
+        </a>
+        <a href="#method" class="whitespace-nowrap px-4 py-2 rounded-md hover:bg-light transition-colors flex items-center gap-2 text-sm md:text-base">
+          <i class="fa-solid fa-cogs text-primary"></i> Method
+        </a>
+        <a href="#experiments" class="whitespace-nowrap px-4 py-2 rounded-md hover:bg-light transition-colors flex items-center gap-2 text-sm md:text-base">
+          <i class="fa-solid fa-flask text-primary"></i> Experiments
+        </a>
+        <a href="#bibtex" class="whitespace-nowrap px-4 py-2 rounded-md hover:bg-light transition-colors flex items-center gap-2 text-sm md:text-base">
+          <i class="fa-solid fa-quote-right text-primary"></i> BibTeX
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-6 py-16">
+    <div class="max-w-3xl mx-auto space-y-10">
+      <!-- 摘要部分 -->
+      <section id="abstract" class="bg-white gradient-border section-transition card-elevation overflow-hidden">
+        <div class="p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="section-icon w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300">
+              <i class="fa-solid fa-file-text text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-dark">Abstract</h2>
+          </div>
+          <div class="prose max-w-none text-gray-700 leading-relaxed">
+            <p>{{ abstract }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 动机部分 -->
+      <section id="motivation" class="bg-white gradient-border section-transition card-elevation overflow-hidden">
+        <div class="p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="section-icon w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300">
+              <i class="fa-solid fa-lightbulb text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-dark">Motivation</h2>
+          </div>
+          <div class="prose max-w-none text-gray-700 leading-relaxed">
+            <p>{{ motivation }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 创新点部分 -->
+      <section id="innovation" class="bg-white gradient-border section-transition card-elevation overflow-hidden">
+        <div class="p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="section-icon w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300">
+              <i class="fa-solid fa-star text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-dark">Innovation</h2>
+          </div>
+          <div class="prose max-w-none text-gray-700 leading-relaxed">
+            <p>{{ innovation }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 方法部分 -->
+      <section id="method" class="bg-white gradient-border section-transition card-elevation overflow-hidden">
+        <div class="p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="section-icon w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300">
+              <i class="fa-solid fa-cogs text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-dark">Methodology</h2>
+          </div>
+          <div class="prose max-w-none text-gray-700 leading-relaxed">
+            <p>{{ methodology }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 实验部分 -->
+      <section id="experiments" class="bg-white gradient-border section-transition card-elevation overflow-hidden">
+        <div class="p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="section-icon w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300">
+              <i class="fa-solid fa-flask text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-dark">Experiments</h2>
+          </div>
+          <div class="prose max-w-none text-gray-700 leading-relaxed">
+            <p>{{ experiments }}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- BibTeX部分 -->
+      <section id="bibtex" class="bg-white gradient-border section-transition card-elevation overflow-hidden">
+        <div class="p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="section-icon w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all duration-300">
+              <i class="fa-solid fa-quote-right text-xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-dark">BibTeX</h2>
+          </div>
+          <div class="bg-light p-5 rounded-lg font-mono text-sm overflow-x-auto border border-primary/10">
+            <pre>{{ bibtex }}</pre>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-gradient-to-r from-dark to-secondary text-white/80 py-12 mt-20">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+        <div class="text-center md:text-left">
+          <h3 class="text-lg md:text-xl font-heading font-semibold text-white mb-2 flex items-center justify-center md:justify-start">
+            <i class="fa-solid fa-book-open mr-2"></i>{{ title|truncate(30) }}
+          </h3>
+          <p class="text-xs md:text-sm">© {{ year }} All rights reserved</p>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors duration-300" aria-label="Twitter">
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors duration-300" aria-label="GitHub">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors duration-300" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors duration-300" aria-label="Email">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 导航高亮功能
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('section');
+      const navLinks = document.querySelectorAll('nav a');
+      const nav = document.querySelector('nav');
+      
+      // 监听滚动事件更新导航状态
+      window.addEventListener('scroll', updateNav);
+      
+      // 初始加载时更新一次
+      updateNav();
+      
+      function updateNav() {
+        // 导航栏滚动效果
+        if (window.scrollY > 300) {
+          nav.classList.add('py-2', 'shadow-lg');
+          nav.classList.remove('py-3', 'shadow-md');
+        } else {
+          nav.classList.add('py-3', 'shadow-md');
+          nav.classList.remove('py-2', 'shadow-lg');
+        }
+        
+        // 导航链接高亮
+        let currentSection = '';
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 150;
+          const sectionHeight = section.offsetHeight;
+          
+          if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            currentSection = section.getAttribute('id');
+          }
+        });
+        
+        navLinks.forEach(link => {
+          link.classList.remove('bg-light', 'font-medium', 'text-primary');
+          if (link.getAttribute('href') === `#${currentSection}`) {
+            link.classList.add('bg-light', 'font-medium', 'text-primary');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

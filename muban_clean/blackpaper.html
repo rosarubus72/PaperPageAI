@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- 引入现代无衬线字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- 配置Tailwind暗黑科技风格 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cyber-black': '#0D1117',
+            'cyber-dark': '#161B22',
+            'cyber-darker': '#0A0E14',
+            'cyber-blue': '#00F0FF',
+            'cyber-purple': '#BF00FF',
+            'cyber-pink': '#FF00C8',
+            'cyber-green': '#00FF9D',
+            'cyber-gray': '#8B949E',
+            'primary': '#00F0FF',
+            'secondary': '#BF00FF',
+            'dark': '#FFFFFF'
+          },
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif'],
+            'heading': ['Inter', 'sans-serif']
+          },
+          animation: {
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            glow: {
+              '0%': { 'text-shadow': '0 0 5px currentColor, 0 0 10px currentColor' },
+              '100%': { 'text-shadow': '0 0 10px currentColor, 0 0 20px currentColor' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-glow {
+        text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+      }
+      .border-glow {
+        box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+      }
+      .grid-bg {
+        background-image: 
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 25px 25px;
+      }
+      .glass {
+        background: rgba(22, 27, 34, 0.6);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .icon-hover {
+        transition: transform 0.3s ease, text-shadow 0.3s ease;
+      }
+      .icon-hover:hover {
+        transform: scale(1.1);
+        text-shadow: 0 0 10px currentColor;
+      }
+      .hero-gradient {
+        background: linear-gradient(135deg, rgba(13,17,23,0.95), rgba(22,27,34,0.95));
+        position: relative;
+        overflow: hidden;
+      }
+      .text-shadow {
+        text-shadow: 0 0 15px rgba(0,240,255,0.5), 0 0 30px rgba(0,240,255,0.3);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-cyber-black text-gray-300 font-inter grid-bg min-h-screen">
+  <!-- 背景光效装饰 -->
+  <div class="fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-cyber-purple/15 blur-3xl opacity-70"></div>
+    <div class="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-cyber-blue/15 blur-3xl opacity-70"></div>
+  </div>
+
+  <!-- ===== Navigation Bar ===== -->
+  <nav class="sticky top-0 glass z-50 border-b border-gray-800">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl md:text-2xl font-semibold text-cyber-blue animate-glow">{{ title }}</h1>
+      <div class="hidden md:flex space-x-6 text-sm font-medium">
+        <a href="#abstract" class="flex items-center gap-1.5 hover:text-cyber-blue transition-colors duration-300">
+          <i class="fa-solid fa-file-lines text-xs"></i> Abstract
+        </a>
+        <a href="#motivation" class="flex items-center gap-1.5 hover:text-cyber-purple transition-colors duration-300">
+          <i class="fa-solid fa-lightbulb text-xs"></i> Motivation
+        </a>
+        <a href="#innovation" class="flex items-center gap-1.5 hover:text-cyber-pink transition-colors duration-300">
+          <i class="fa-solid fa-rocket text-xs"></i> Innovation
+        </a>
+        <a href="#method" class="flex items-center gap-1.5 hover:text-cyber-green transition-colors duration-300">
+          <i class="fa-solid fa-cogs text-xs"></i> Method
+        </a>
+        <a href="#experiments" class="flex items-center gap-1.5 hover:text-cyber-blue transition-colors duration-300">
+          <i class="fa-solid fa-chart-bar text-xs"></i> Experiments
+        </a>
+        <a href="#bibtex" class="flex items-center gap-1.5 hover:text-cyber-purple transition-colors duration-300">
+          <i class="fa-solid fa-quote-right text-xs"></i> BibTeX
+        </a>
+      </div>
+      <button class="md:hidden text-gray-400 hover:text-cyber-blue">
+        <i class="fa-solid fa-bars text-xl icon-hover"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== 标题区域（移除所有循环，仅保留单个变量）===== -->
+  <header class="hero-gradient py-12 md:py-16">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <!-- 出版物信息标签 -->
+        <div class="inline-block bg-cyber-dark/80 text-cyber-blue border border-cyber-blue/30 px-4 py-1.5 rounded-full text-sm md:text-base mb-6 font-medium">
+          {{ publication_info }}
+        </div>
+        
+        <h1 class="text-3xl md:text-5xl font-heading font-bold text-dark mb-6 text-shadow leading-tight">
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink">
+            {{ title }}
+          </span>
+        </h1>
+        
+        <!-- 作者（仅单个变量，无循环） -->
+        <div class="text-gray-300 mb-4 text-lg font-medium">
+          {{ authors }}
+        </div>
+        
+        <!-- 机构（仅单个变量，无循环） -->
+        <div class="text-cyber-gray text-sm md:text-base max-w-2xl mx-auto mb-8">
+          {{ affiliations }}
+        </div>
+        
+        <!-- 链接按钮 -->
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href="{{ links.paper or '#' }}" class="bg-primary text-white px-5 py-2 rounded-lg font-semibold hover:bg-secondary transition-colors flex items-center gap-2 shadow-md border-glow {% if not links.paper %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-solid fa-file-pdf icon-hover"></i> Paper
+          </a>
+          <a href="{{ links.code or '#' }}" class="bg-cyber-dark text-primary px-5 py-2 rounded-lg font-semibold hover:bg-cyber-black transition-colors flex items-center gap-2 shadow-sm border border-primary/30 {% if not links.code %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-brands fa-github icon-hover"></i> Code
+          </a>
+          <a href="{{ links.dataset or '#' }}" class="bg-cyber-dark text-primary px-5 py-2 rounded-lg font-semibold hover:bg-cyber-black transition-colors flex items-center gap-2 shadow-sm border border-primary/30 {% if not links.dataset %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-solid fa-database icon-hover"></i> Dataset
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Abstract Section ===== -->
+  <section id="abstract" class="py-16 relative">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-lg bg-cyber-blue/10 flex items-center justify-center text-cyber-blue border border-cyber-blue/30">
+          <i class="fa-solid fa-file-lines icon-hover"></i>
+        </div>
+        <h2 class="text-3xl font-semibold text-white">Abstract</h2>
+      </div>
+      
+      <div class="glass p-8 rounded-xl border border-gray-800 hover:border-cyber-blue/30 transition-all">
+        <p class="text-lg leading-relaxed">{{ abstract }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Motivation Section ===== -->
+  <section id="motivation" class="py-16 relative bg-cyber-darker/50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-lg bg-cyber-purple/10 flex items-center justify-center text-cyber-purple border border-cyber-purple/30">
+          <i class="fa-solid fa-lightbulb icon-hover"></i>
+        </div>
+        <h2 class="text-3xl font-semibold text-white">Motivation</h2>
+      </div>
+      
+      <div class="glass p-8 rounded-xl border border-gray-800 hover:border-cyber-purple/30 transition-all">
+        <p class="text-lg leading-relaxed">{{ motivation }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Innovation Section ===== -->
+  <section id="innovation" class="py-16 relative">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-lg bg-cyber-pink/10 flex items-center justify-center text-cyber-pink border border-cyber-pink/30">
+          <i class="fa-solid fa-rocket icon-hover"></i>
+        </div>
+        <h2 class="text-3xl font-semibold text-white">Innovation</h2>
+      </div>
+      
+      <div class="glass p-8 rounded-xl border border-gray-800 hover:border-cyber-pink/30 transition-all">
+        <p class="text-lg leading-relaxed">{{ innovation }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Method Section ===== -->
+  <section id="method" class="py-16 relative bg-cyber-darker/50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-lg bg-cyber-green/10 flex items-center justify-center text-cyber-green border border-cyber-green/30">
+          <i class="fa-solid fa-cogs icon-hover"></i>
+        </div>
+        <h2 class="text-3xl font-semibold text-white">Methodology</h2>
+      </div>
+      
+      <div class="glass p-8 rounded-xl border border-gray-800 hover:border-cyber-green/30 transition-all">
+        <p class="text-lg leading-relaxed">{{ methodology }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Experiments Section ===== -->
+  <section id="experiments" class="py-16 relative">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-lg bg-cyber-blue/10 flex items-center justify-center text-cyber-blue border border-cyber-blue/30">
+          <i class="fa-solid fa-chart-bar icon-hover"></i>
+        </div>
+        <h2 class="text-3xl font-semibold text-white">Experiments</h2>
+      </div>
+      
+      <div class="glass p-8 rounded-xl border border-gray-800 hover:border-cyber-blue/30 transition-all">
+        <p class="text-lg leading-relaxed">{{ experiments }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BibTeX Section ===== -->
+  <section id="bibtex" class="py-16 relative bg-cyber-darker/50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center text-gray-400 border border-gray-700">
+          <i class="fa-solid fa-quote-right icon-hover"></i>
+        </div>
+        <h2 class="text-3xl font-semibold text-white">BibTeX</h2>
+      </div>
+      
+      <div class="glass rounded-xl border border-gray-800 overflow-hidden">
+        <div class="bg-cyber-dark px-4 py-3 flex justify-between items-center border-b border-gray-800">
+          <span class="text-cyber-purple font-medium">Citation</span>
+          <button class="text-cyber-blue hover:text-cyber-blue/80 transition-colors text-sm flex items-center gap-1">
+            <i class="fa-solid fa-copy"></i> Copy
+          </button>
+        </div>
+        <pre class="p-6 font-mono text-sm overflow-x-auto max-h-60 bg-cyber-black/50 text-gray-400">{{ bibtex }}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="py-10 glass border-t border-gray-800">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <div class="text-cyber-blue font-semibold mb-1 text-lg">{{ title }}</div>
+          <div class="text-gray-500 text-sm">© {{ year }} {{ authors.split('·')[0] if authors }} et al.</div>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center text-gray-400 hover:text-cyber-purple hover:border-cyber-purple/50 border border-transparent transition-all">
+            <i class="fa-brands fa-twitter icon-hover"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center text-gray-400 hover:text-cyber-blue hover:border-cyber-blue/50 border border-transparent transition-all">
+            <i class="fa-brands fa-github icon-hover"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center text-gray-400 hover:text-cyber-green hover:border-cyber-green/50 border border-transparent transition-all">
+            <i class="fa-brands fa-linkedin icon-hover"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 平滑滚动脚本 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 平滑滚动导航
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+          
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+
+      // 复制BibTeX功能
+      const copyBtn = document.querySelector('button:has(.fa-copy)');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function() {
+          const preElement = this.closest('div').nextElementSibling;
+          const textToCopy = preElement.textContent;
+          
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+            this.classList.add('text-cyber-green');
+            
+            setTimeout(() => {
+              this.innerHTML = originalHTML;
+              this.classList.remove('text-cyber-green');
+            }, 2000);
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- 配置Tailwind自定义颜色 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6', // 蓝色作为主色调
+            secondary: '#10b981', // 绿色作为辅助色
+          },
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+    }
+  </style>
+  
+  <style>
+    /* 添加一些自定义样式确保图表显示正常 */
+    .plotly-chart {
+      width: 100%;
+      height: 500px;
+    }
+    .chart-controls {
+      margin: 15px 0;
+      text-align: center;
+    }
+    .chart-btn {
+      margin: 0 5px;
+      padding: 8px 15px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .chart-btn:hover {
+      background-color: #2563eb;
+    }
+    .chart-btn.active {
+      background-color: #1e40af;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+
+  <!-- ===== Navigation Bar ===== -->
+  <nav class="sticky top-0 bg-white shadow-md z-50">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+      <h1 class="text-xl md:text-2xl font-bold text-primary">{{ title }}</h1>
+      <div class="flex space-x-4 mt-2 md:mt-0">
+        <a href="#abstract" class="text-gray-700 hover:text-primary font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-file-text"></i> Abstract
+        </a>
+        <a href="#motivation" class="text-gray-700 hover:text-primary font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-lightbulb"></i> Motivation
+        </a>
+        <a href="#innovation" class="text-gray-700 hover:text-primary font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-star"></i> Innovation
+        </a>
+        <a href="#method" class="text-gray-700 hover:text-primary font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-cogs"></i> Method
+        </a>
+        <a href="#experiments" class="text-gray-700 hover:text-primary font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-flask"></i> Experiments
+        </a>
+        <a href="#bibtex" class="text-gray-700 hover:text-primary font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-quote-right"></i> BibTeX
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== Hero Section ===== -->
+  <section class="bg-gradient-to-b from-white to-gray-100 py-12 md:py-20 text-center">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">{{ title }}</h1>
+      <div class="inline-block bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-lg font-semibold mb-6">
+        {{ publication_info }}
+      </div>
+
+      <!-- Authors - 移除循环，直接使用单个变量 -->
+      <div class="max-w-4xl mx-auto mb-6">
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-lg">
+          <p>{{ authors }}</p>
+        </div>
+        <!-- Affiliations - 移除循环，直接使用单个变量 -->
+        <div class="mt-2 text-gray-600">
+          {{ affiliations }}
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="{{ links.paper or '#' }}" class="bg-primary text-white px-5 py-2 rounded-lg font-semibold hover:bg-secondary transition-colors flex items-center gap-2 shadow-md {% if not links.paper %}opacity-50 pointer-events-none{% endif %}">
+          <i class="fa-solid fa-file-pdf"></i> Paper
+        </a>
+        <a href="{{ links.code or '#' }}" class="bg-white text-primary px-5 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm {% if not links.code %}opacity-50 pointer-events-none{% endif %}">
+          <i class="fa-brands fa-github"></i> Code
+        </a>
+        <a href="{{ links.dataset or '#' }}" class="bg-white text-primary px-5 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm {% if not links.dataset %}opacity-50 pointer-events-none{% endif %}">
+          <i class="fa-solid fa-database"></i> Dataset
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Abstract Section ===== -->
+  <section id="abstract" class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <i class="fa-solid fa-file-text text-2xl text-primary"></i>
+        <h2 class="text-3xl font-bold text-center">Abstract</h2>
+      </div>
+      <div class="bg-gray-50 p-8 rounded-xl shadow-sm border border-gray-200">
+        <p class="text-lg leading-relaxed">{{ abstract }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Motivation Section ===== -->
+  <section id="motivation" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <i class="fa-solid fa-lightbulb text-2xl text-yellow-500"></i>
+        <h2 class="text-3xl font-bold text-center">Motivation</h2>
+      </div>
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+        <p class="text-lg leading-relaxed">{{ motivation }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Innovation Section ===== -->
+  <section id="innovation" class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <i class="fa-solid fa-star text-2xl text-yellow-400"></i>
+        <h2 class="text-3xl font-bold text-center">Innovation</h2>
+      </div>
+      <div class="bg-gray-50 p-8 rounded-xl shadow-sm border border-gray-200">
+        <p class="text-lg leading-relaxed">{{ innovation }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Method Section ===== -->
+  <section id="method" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <i class="fa-solid fa-cogs text-2xl text-primary"></i>
+        <h2 class="text-3xl font-bold text-center">Method</h2>
+      </div>
+      <p class="text-lg leading-relaxed">{{ methodology }}</p>
+    </div>
+  </section>
+
+  <!-- ===== Experiments Section ===== -->
+  <section id="experiments" class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <i class="fa-solid fa-flask text-2xl text-secondary"></i>
+        <h2 class="text-3xl font-bold text-center">Experiments</h2>
+      </div>
+      <p class="text-lg leading-relaxed">{{ experiments }}</p>
+    </div>
+  </section>
+
+  <!-- ===== BibTeX Section ===== -->
+  <section id="bibtex" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <i class="fa-solid fa-quote-right text-2xl text-gray-600"></i>
+        <h2 class="text-3xl font-bold text-center">BibTeX</h2>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 font-mono text-sm text-left overflow-x-auto">
+        <pre>{{ bibtex }}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="text-center py-6 text-gray-500 text-sm border-t border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-center gap-4 mb-2">
+        <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-github"></i></a>
+        <a href="#" class="hover:text-primary transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+      </div>
+      <!-- 移除数组索引，直接使用authors变量 -->
+      © {{ year }} {{ authors }} et al.
+    </div>
+  </footer>
+
+  <!-- 图表交互脚本 -->
+  <script>
+    // 全局图表交互功能
+    const UniversalTableParser = {
+      changeChartType: function(tableId, chartType, originalData, originalLayout) {
+        const container = document.getElementById('plotly-chart-' + tableId);
+        
+        let newData = [];
+        if (chartType === 'bar') {
+          newData = originalData.map(trace => ({
+            ...trace,
+            type: 'bar'
+          }));
+        } else if (chartType === 'line') {
+          newData = originalData.map(trace => ({
+            ...trace,
+            type: 'scatter',
+            mode: 'lines+markers'
+          }));
+        } else if (chartType === 'scatter') {
+          newData = originalData.map(trace => ({
+            ...trace,
+            type: 'scatter',
+            mode: 'markers'
+          }));
+        }
+        
+        const newLayout = {
+          ...originalLayout,
+          title: originalLayout.title.replace(/Bar Chart|Line Chart|Scatter Plot/, 
+                 chartType.charAt(0).toUpperCase() + chartType.slice(1) + 
+                 (chartType === 'bar' ? ' Chart' : chartType === 'line' ? ' Chart' : ' Plot'))
+        };
+        
+        Plotly.react('plotly-chart-' + tableId, newData, newLayout);
+      }
+    };
+
+    // 视图切换功能
+    function toggleView(showId, hideId, button) {
+      document.getElementById(showId).classList.remove('hidden');
+      document.getElementById(hideId).classList.add('hidden');
+      
+      // 更新按钮样式
+      const container = button.parentElement;
+      container.querySelectorAll('button').forEach(btn => {
+        btn.classList.remove('bg-blue-500', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-700');
+      });
+      button.classList.remove('bg-gray-200', 'text-gray-700');
+      button.classList.add('bg-blue-500', 'text-white');
+    }
+
+    // 表格排序功能
+    const UniversalTableSorter = {
+      sortTable: function(table, column) {
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const isAscending = !table.dataset.sortAsc || table.dataset.sortCol !== column.toString();
+        table.dataset.sortCol = column;
+        table.dataset.sortAsc = isAscending;
+        rows.sort((a, b) => {
+          const aVal = a.children[column]?.textContent?.trim() || '';
+          const bVal = b.children[column]?.textContent?.trim() || '';
+          const aNum = parseFloat(aVal.replace(/[^\d.\-]/g, ''));
+          const bNum = parseFloat(bVal.replace(/[^\d.\-]/g, ''));
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return isAscending ? aNum - bNum : bNum - aNum;
+          }
+          return isAscending ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        });
+        rows.forEach(r => tbody.appendChild(r));
+      }
+    };
+
+    // 页面加载完成后初始化表格交互
+    document.addEventListener('DOMContentLoaded', function() {
+      // 为所有表格添加排序功能
+      document.querySelectorAll('.interactive-table table').forEach(table => {
+        const headers = table.querySelectorAll('th');
+        headers.forEach((header, index) => {
+          header.addEventListener('click', () => {
+            UniversalTableSorter.sortTable(table, index);
+          });
+          header.style.cursor = 'pointer';
+          header.classList.add('hover:bg-gray-100', 'transition-colors');
+          header.title = 'Click to sort';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

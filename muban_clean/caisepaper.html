@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4F46E5',
+            accent1: '#EC4899',
+            accent2: '#06B6D4',
+            dark: '#1E293B',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Poppins', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .content-auto {
+        content-visibility: auto;
+      }
+      .sidebar-sticky {
+        position: sticky;
+        top: 2rem;
+        height: calc(100vh - 4rem);
+        overflow-y: auto;
+      }
+    }
+  </style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 50%, #EC4899 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 15s ease infinite;
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* 导航高亮效果 */
+    .nav-item.active {
+      background-color: rgba(79, 70, 229, 0.1);
+      color: #4F46E5;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+  <!-- 彩色头部区域 -->
+  <header class="hero-gradient text-white py-16 md:py-24 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.2)_0%,transparent_40%)]"></div>
+      <div class="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.2)_0%,transparent_40%)]"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-5xl mx-auto text-center">
+        <div class="inline-block px-4 py-1 rounded-full bg-white/20 backdrop-blur-sm mb-6 text-sm font-medium">
+          {{ publication_info }}
+        </div>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 leading-tight">
+          {{ title }}
+        </h1>
+        <!-- 移除循环，直接使用单个authors变量 -->
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-lg mb-8">
+          <span>{{ authors }}</span>
+        </div>
+        <!-- 移除循环，直接使用单个affiliations变量 -->
+        <div class="text-white/80 text-sm md:text-base max-w-2xl mx-auto mb-8">
+          <span>{{ affiliations }}</span>
+        </div>
+        <!-- Links -->
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href="{{ links.paper or '#' }}" class="bg-primary text-white px-5 py-2 rounded-lg font-semibold hover:bg-secondary transition-colors flex items-center gap-2 shadow-md {% if not links.paper %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-solid fa-file-pdf"></i> Paper
+          </a>
+          <a href="{{ links.code or '#' }}" class="bg-white text-primary px-5 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm {% if not links.code %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-brands fa-github"></i> Code
+          </a>
+          <a href="{{ links.dataset or '#' }}" class="bg-white text-primary px-5 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm {% if not links.dataset %}opacity-50 pointer-events-none{% endif %}">
+            <i class="fa-solid fa-database"></i> Dataset
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 双栏布局主体 -->
+  <div class="container mx-auto px-6 py-12">
+    <div class="flex flex-col lg:flex-row gap-10">
+      <!-- 左侧边栏 -->
+      <aside class="lg:w-1/4 sidebar-sticky">
+        <div class="bg-white rounded-xl shadow-sm p-6 sticky top-4">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Navigation</h3>
+          <nav class="space-y-1">
+            <a href="#abstract" class="nav-item block py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-file-text text-primary w-5 text-center"></i>
+              <span>Abstract</span>
+            </a>
+            <a href="#motivation" class="nav-item block py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-lightbulb text-accent1 w-5 text-center"></i>
+              <span>Motivation</span>
+            </a>
+            <a href="#innovation" class="nav-item block py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-star text-accent2 w-5 text-center"></i>
+              <span>Innovation</span>
+            </a>
+            <a href="#method" class="nav-item block py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-cogs text-primary w-5 text-center"></i>
+              <span>Methodology</span>
+            </a>
+            <a href="#experiments" class="nav-item block py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-flask text-accent1 w-5 text-center"></i>
+              <span>Experiments</span>
+            </a>
+            <a href="#bibtex" class="nav-item block py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-2">
+              <i class="fa-solid fa-quote-right text-accent2 w-5 text-center"></i>
+              <span>BibTeX</span>
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- 右侧主内容区 -->
+      <main class="lg:w-3/4 space-y-16">
+        <!-- 摘要部分 -->
+        <section id="abstract" class="bg-white rounded-xl shadow-sm p-8 card-hover">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa-solid fa-file-text"></i>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-800">Abstract</h2>
+          </div>
+          <div class="prose prose-lg max-w-none text-gray-700">
+            <p>{{ abstract }}</p>
+          </div>
+        </section>
+
+        <!-- 动机部分 -->
+        <section id="motivation" class="bg-white rounded-xl shadow-sm p-8 card-hover">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-accent1/10 flex items-center justify-center text-accent1">
+              <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-800">Motivation</h2>
+          </div>
+          <div class="prose prose-lg max-w-none text-gray-700">
+            <p>{{ motivation }}</p>
+          </div>
+        </section>
+
+        <!-- 创新点部分 -->
+        <section id="innovation" class="bg-white rounded-xl shadow-sm p-8 card-hover">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-accent2/10 flex items-center justify-center text-accent2">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-800">Innovation</h2>
+          </div>
+          <div class="prose prose-lg max-w-none text-gray-700">
+            <p>{{ innovation }}</p>
+          </div>
+        </section>
+
+        <!-- 方法部分 -->
+        <section id="method" class="bg-white rounded-xl shadow-sm p-8 card-hover">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa-solid fa-cogs"></i>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-800">Methodology</h2>
+          </div>
+          <div class="prose prose-lg max-w-none text-gray-700">
+            <p>{{ methodology }}</p>
+          </div>
+        </section>
+
+        <!-- 实验部分 -->
+        <section id="experiments" class="bg-white rounded-xl shadow-sm p-8 card-hover">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-accent1/10 flex items-center justify-center text-accent1">
+              <i class="fa-solid fa-flask"></i>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-800">Experiments</h2>
+          </div>
+          <div class="prose prose-lg max-w-none text-gray-700">
+            <p>{{ experiments }}</p>
+          </div>
+        </section>
+
+        <!-- BibTeX部分 -->
+        <section id="bibtex" class="bg-white rounded-xl shadow-sm p-8 card-hover">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-full bg-accent2/10 flex items-center justify-center text-accent2">
+              <i class="fa-solid fa-quote-right"></i>
+            </div>
+            <h2 class="text-2xl font-display font-bold text-gray-800">BibTeX</h2>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+            <pre>{{ bibtex }}</pre>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white/80 py-12 mt-16">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+          <h3 class="text-xl font-display font-semibold text-white mb-2">{{ title }}</h3>
+          <!-- 修改页脚中的authors引用，移除数组索引 -->
+          <p class="text-sm max-w-md">© {{ year }} {{ authors }} et al. All rights reserved.</p>
+        </div>
+        <div class="flex gap-4">
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+            <i class="fa-brands fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 导航高亮功能
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('section');
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      // 页面加载时激活第一个导航项
+      if (navItems.length > 0) {
+        navItems[0].classList.add('active');
+      }
+      
+      // 滚动时更新导航高亮
+      window.addEventListener('scroll', function() {
+        let currentSectionId = '';
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 100;
+          const sectionHeight = section.offsetHeight;
+          
+          if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+            currentSectionId = section.getAttribute('id');
+          }
+        });
+        
+        navItems.forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('href') === `#${currentSectionId}`) {
+            item.classList.add('active');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
